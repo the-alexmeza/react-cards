@@ -1,6 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import Deck from "./components/deck";
+import Navbar from "./components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { Component } from "react";
 
@@ -47,6 +48,7 @@ class App extends Component {
 
   state = {
     cards: this.makeDeck(),
+    hand: [],
   };
 
   handleShuffle = () => {
@@ -55,14 +57,49 @@ class App extends Component {
       const j = Math.floor(Math.random() * (i + 1));
       [cards[i], cards[j]] = [cards[j], cards[i]];
     }
-
     this.setState({ cards });
+  };
+
+  handleDraw = () => {
+    if (!this.state.cards.length) return;
+    let hand = [...this.state.hand];
+    let cards = [...this.state.cards];
+    const card = cards.shift(); // Drawing from index 0
+    hand.push(card);
+    this.setState({ cards, hand });
+  };
+
+  handleDiscard = () => {
+    // todo: find out how to make this method not repetitive
+    if (!this.state.hand.length) return;
+    let hand = [...this.state.hand];
+    let cards = [...this.state.cards];
+    const card = hand.shift(); // Discard from index 0
+    cards.push(card);
+    this.setState({ cards, hand });
   };
 
   render() {
     return (
       <div>
-        <Deck cards={this.state.cards} onShuffle={this.handleShuffle} />
+        <Navbar
+          onShuffle={this.handleShuffle}
+          onDraw={this.handleDraw}
+          onDiscard={this.handleDiscard}
+        />
+        <div className="container">
+          <Deck cards={this.state.hand}>
+            <h4>Your Hand</h4>
+            <p>
+              {this.state.hand.length === 0 ? "You do not have any cards!" : ""}
+            </p>
+          </Deck>
+          <hr></hr>
+          <Deck cards={this.state.cards}>
+            <h4>Deck</h4>
+            <p>{this.state.cards.length === 0 ? "The deck is empty!" : ""}</p>
+          </Deck>
+        </div>
       </div>
     );
   }

@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import Card from "./card";
 
-const Deck = ({ cards, onShuffle }) => {
+const Deck = ({ cards, children }) => {
   return (
-    <div id="deck">
-      <button className="btn btn-primary btn-sm m-2" onClick={onShuffle}>
-        Shuffle
-      </button>
+    <div>
       <hr></hr>
-      <div id="cards">
+      <div>
+        {children}
         {cards.map((card) => (
           <Card key={card.id} card={card} />
         ))}
